@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="theme-color" content="#21081e" />
+  <title>Saile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="features.css" />
+  <link rel="stylesheet" href="nested.css" />
+  <link rel="stylesheet" href="profile.css" />
+  <link rel="stylesheet" href="notes-v2.css" />
+  <link rel="stylesheet" href="onboarding.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <header class="topbar">
+      <img class="app-logo" src="assets/saile-logo.png" alt="Saile">
+      <button class="avatar" id="profileBtn" aria-label="Profile">AS</button>
+    </header>
+
+    <main id="main"></main>
+
+    <nav class="bottom-nav" aria-label="Main navigation">
+      <button class="nav-item active" data-page="home"><i data-icon="home"></i><span>Home</span></button>
+      <button class="nav-item" data-page="sections"><i data-icon="folder"></i><span>Sections</span></button>
+      <button class="create-btn" id="createBtn" aria-label="Create new"><i data-icon="plus"></i></button>
+      <button class="nav-item" data-page="reminders"><i data-icon="calendar"></i><span>Reminders</span></button>
+      <button class="nav-item" data-page="notes"><i data-icon="note"></i><span>Notes</span></button>
+    </nav>
+  </div>
+
+  <div class="sheet-backdrop" id="sheetBackdrop"></div>
+  <section class="action-sheet" id="actionSheet" aria-modal="true" aria-label="Create new">
+    <div class="sheet-handle"></div>
+    <div class="sheet-head"><h2>Create new</h2><button class="close-btn" id="closeSheet" data-icon="close"></button></div>
+    <div class="quick-actions">
+      <button data-action="upload"><span class="action-icon plum" data-icon="upload"></span><span><b>Upload document</b><small>PDF, Word, Excel, PowerPoint or text</small></span><i data-icon="chevron"></i></button>
+      <button data-action="note"><span class="action-icon rose" data-icon="note"></span><span><b>Create note</b><small>Write an idea or attach a file</small></span><i data-icon="chevron"></i></button>
+      <button data-action="reminder"><span class="action-icon blue" data-icon="calendar"></span><span><b>Add reminder</b><small>Schedule a date and category</small></span><i data-icon="chevron"></i></button>
+      <button data-action="folder"><span class="action-icon amber" data-icon="folder"></span><span><b>New folder</b><small>Organize your files and notes</small></span><i data-icon="chevron"></i></button>
+    </div>
+  </section>
+
+  <div class="modal-backdrop" id="modalBackdrop"><form class="modal" id="itemForm">
+    <div class="sheet-head"><h2 id="formTitle">Create note</h2><button type="button" class="close-btn" id="closeModal" data-icon="close"></button></div>
+    <label>Title<input id="titleInput" required maxlength="60" placeholder="Add a title"></label>
+    <label id="detailsLabel">Details<textarea id="detailsInput" rows="4" placeholder="Write something"></textarea></label>
+    <label id="noteGroupLabel" class="hidden">Group<select id="noteGroupInput"></select></label>
+    <div id="typeLabel" class="hidden"><span class="field-label">Tag</span><div class="tag-picker"><label><input type="radio" name="reminderTag" value="Work" checked><span>Work</span></label><label><input type="radio" name="reminderTag" value="Personal"><span>Personal</span></label><label><input type="radio" name="reminderTag" value="Holiday"><span>Holiday</span></label></div></div>
+    <div id="reminderFields" class="hidden form-grid"><label>Date<input id="dateInput" type="date"></label><label>Time<input id="timeInput" type="time"></label></div>
+    <div id="noteTools" class="hidden note-tools">
+      <input id="photoInput" type="file" accept="image/*" capture="environment" hidden>
+      <button type="button" class="tool-btn" id="photoBtn"><span data-icon="camera"></span>Take photo</button>
+      <button type="button" class="tool-btn" id="drawBtn"><span data-icon="pen"></span>Draw</button>
+      <div id="photoResult" class="photo-result hidden"></div>
+      <div id="drawingPanel" class="drawing-panel hidden"><div class="canvas-tools"><button type="button" class="pen active" data-size="2">Fine</button><button type="button" class="pen" data-size="5">Marker</button><input id="penColor" type="color" value="#21081e"><button type="button" id="clearCanvas">Clear</button></div><canvas id="drawingCanvas" width="420" height="180"></canvas></div>
+    </div>
+    <button class="primary-btn" type="submit">Save</button>
+  </form></div>
+
+  <input id="fileInput" type="file" accept=".pdf,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.txt" hidden>
+  <input id="avatarInput" type="file" accept="image/*" hidden>
+  <input id="restoreInput" type="file" accept=".json,.csv" hidden>
+  <div class="profile-menu" id="profileMenu">
+    <button data-profile="avatar">Upload avatar image</button><button data-profile="backup">Import / Export</button>
+  </div>
+  <div class="viewer-backdrop" id="viewerBackdrop"><section class="viewer"><div class="viewer-head"><div><b id="viewerTitle"></b><small id="viewerMeta"></small></div><button id="viewerClose" aria-label="Close" data-icon="close"></button></div><div id="viewerBody"></div><div class="viewer-actions"><button id="externalOpen">Open in another app</button></div></section></div>
+  <div class="backup-backdrop" id="backupBackdrop"><section class="backup-panel"><div class="viewer-head"><div><b>Import / Export</b><small>Back up all Saile data</small></div><button id="backupClose" aria-label="Close" data-icon="close"></button></div><div class="backup-block"><h3>Export</h3><p>Download sections, notes, reminders, and documents.</p><div><button data-export="json">Export JSON</button><button data-export="csv">Export CSV</button></div></div><div class="backup-block"><h3>Restore backup</h3><p>Choose a Saile JSON or CSV backup file.</p><button id="restoreBtn">Choose backup</button></div></section></div>
+  <div class="toast" id="toast"></div>
+  <script src="app.js"></script>
+  <script>I.lock='<rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/>';</script>
+  <script src="notes-v2.js"></script>
+  <script src="enhancements.js"></script>
+  <script src="onboarding.js"></script>
+</body>
+</html>
